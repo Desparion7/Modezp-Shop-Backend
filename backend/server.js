@@ -2,6 +2,8 @@ import path from 'path';
 import express from 'express';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
+import cors from 'cors';
+
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 import connectDB from './config/db.js';
 
@@ -9,12 +11,15 @@ import productRoutes from './routes/productsRoutes.js';
 import userRoutes from './routes/usersRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
+import corsOptions from './config/corsOptions.js';
 
 dotenv.config();
 
 connectDB();
-
 const app = express();
+
+app.use(cors());
+
 app.get('/', (req, res) => {
 	res.send('API is running');
 });
@@ -32,7 +37,7 @@ app.use('/api/upload', uploadRoutes);
 app.get('/api/config/paypal', (req, res) =>
 	res.send(process.env.PAYPAL_CLIENT_ID)
 );
-
+app.use(cors());
 const __dirname = path.resolve();
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 
